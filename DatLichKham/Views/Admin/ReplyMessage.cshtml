@@ -1,0 +1,27 @@
+﻿@model ClinicBookingSystem.Models.Message
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5>Phản hồi tin nhắn từ: @Model.User?.FullName</h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-secondary">
+                <strong>Nội dung khách gửi:</strong><br />
+                @Model.Content
+                <hr />
+                <small>Gửi lúc: @Model.CreatedAt</small>
+            </div>
+
+            <form asp-action="ReplyMessage" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Nội dung phản hồi:</label>
+                    <textarea name="adminReply" class="form-control" rows="5" required>@Model.AdminReply</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Gửi phản hồi</button>
+                <a asp-action="Messages" class="btn btn-outline-secondary">Quay lại</a>
+            </form>
+        </div>
+    </div>
+</div>

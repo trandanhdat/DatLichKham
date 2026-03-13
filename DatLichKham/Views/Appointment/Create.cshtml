@@ -1,0 +1,59 @@
+﻿@model ClinicBookingSystem.Models.Appointment
+@{
+    ViewData["Title"] = "Đặt lịch khám";
+}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0 text-center text-uppercase">Phiếu đăng ký khám bệnh</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="All" class="text-danger small mb-3"></div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Chọn Bác sĩ</label>
+                            <select asp-for="DoctorId" class="form-select form-select-lg" asp-items="ViewBag.Doctors">
+                                <option value="">-- Chọn bác sĩ --</option>
+                            </select>
+                            <span asp-validation-for="DoctorId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="AppointmentDate" class="form-label fw-bold"></label>
+                                <input asp-for="AppointmentDate" type="date" class="form-control" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                <span asp-validation-for="AppointmentDate" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="AppointmentTime" class="form-label fw-bold"></label>
+                                <input asp-for="AppointmentTime" type="time" class="form-control" />
+                                <span asp-validation-for="AppointmentTime" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Reason" class="form-label fw-bold"></label>
+                            <textarea asp-for="Reason" class="form-control" rows="3" placeholder="Mô tả triệu chứng sơ lược..."></textarea>
+                            <span asp-validation-for="Reason" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Xác nhận đặt lịch</button>
+                            <a asp-action="MyAppointments" class="btn btn-light">Hủy bỏ</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <p class="text-center text-muted mt-3 small">Lưu ý: Bạn chỉ có thể hủy lịch khi trạng thái là "Chờ xác nhận".</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,113 @@
+﻿@model ClinicBookingSystem.Models.User
+
+@{
+    ViewData["Title"] = "Hồ sơ cá nhân";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4 text-center mb-4">
+            <div class="card-custom p-4 shadow-sm">
+                <div class="position-relative d-inline-block mb-3">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                         class="rounded-circle img-thumbnail shadow-sm"
+                         style="width: 140px; height: 140px; object-fit: cover; border: 4px solid var(--primary-light);">
+                </div>
+
+                <h4 class="fw-bold mb-1">@Model.FullName</h4>
+                <div class="mb-3">
+                    <span class="badge-status status-approved text-uppercase" style="font-size: 0.75rem;">
+                        @Model.Role
+                    </span>
+                </div>
+
+                <hr class="my-4 opacity-50">
+
+                <div class="text-start px-3">
+                    <p class="small mb-2 text-secondary">
+                        <i class="bi bi-calendar3 me-2"></i>Ngày tham gia:
+                        <span class="text-dark fw-medium">@Model.CreatedAt.ToString("dd/MM/yyyy")</span>
+                    </p>
+                    <p class="small mb-0 text-secondary">
+                        <i class="bi bi-shield-check me-2"></i>Trạng thái:
+                        <span class="text-success fw-medium">Đã xác minh</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card-custom shadow-sm overflow-hidden">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="bi bi-person-gear me-2 text-primary"></i>Cập nhật thông tin tài khoản
+                    </h5>
+                    <p class="text-muted small mb-0">Quản lý thông tin cá nhân và bảo mật của bạn</p>
+                </div>
+
+                <div class="card-body p-4">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success border-0 shadow-sm alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    <form asp-action="Profile" method="post">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label asp-for="FullName" class="form-label fw-semibold">Họ và tên</label>
+                                <input asp-for="FullName" class="form-control-modern w-100" placeholder="Nguyễn Văn A" />
+                                <span asp-validation-for="FullName" class="text-danger small mt-1 d-block"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Username" class="form-label fw-semibold text-muted">Tên đăng nhập</label>
+                                <input asp-for="Username" class="form-control-modern w-100 bg-light shadow-none" readonly />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Email" class="form-label fw-semibold">Địa chỉ Email</label>
+                                <div class="input-group">
+                                    <input asp-for="Email" class="form-control-modern w-100" placeholder="name@example.com" />
+                                </div>
+                                <span asp-validation-for="Email" class="text-danger small mt-1 d-block"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Phone" class="form-label fw-semibold">Số điện thoại</label>
+                                <input asp-for="Phone" class="form-control-modern w-100" placeholder="090 123 4567" />
+                                <span asp-validation-for="Phone" class="text-danger small mt-1 d-block"></span>
+                            </div>
+
+                            <div class="col-12 mt-4">
+                                <div class="p-3 rounded-3 bg-light border">
+                                    <label asp-for="Password" class="form-label fw-semibold mb-1">Mật khẩu mới</label>
+                                    <p class="text-muted small mb-3">Nếu không muốn thay đổi mật khẩu, vui lòng để trống ô dưới đây.</p>
+                                    <input asp-for="Password" type="password" class="form-control-modern w-100 bg-white"
+                                           value="" placeholder="Để trống nếu không đổi" />
+                                </div>
+                            </div>
+
+                            <div class="col-12 d-flex justify-content-end gap-3 mt-4">
+                                <button type="reset" class="btn btn-light px-4 border">Hủy</button>
+                                <button type="submit" class="btn-modern btn btn-primary px-5">
+                                    <i class="bi bi-save me-2"></i>Lưu thay đổi
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,132 @@
+﻿@* Views/Message/DoctorMessages.cshtml *@
+@model List<ClinicBookingSystem.Models.Message>
+@{
+    ViewData["Title"] = "Tin nhắn từ bệnh nhân";
+
+    var groups = Model
+        .GroupBy(m => m.UserId)
+        .Select(g => new
+        {
+            PatientId = g.Key,
+            PatientName = g.First().User?.FullName ?? "Bệnh nhân",
+            Latest = g.OrderByDescending(m => m.CreatedAt).First(),
+            PendingCount = g.Count(m => m.Status == "Pending")
+        })
+        .OrderByDescending(g => g.Latest.CreatedAt)
+        .ToList();
+}
+
+<div class="container-lg mt-4 mb-5 animate-fade-in">
+
+    <div class="d-flex align-items-center mb-4 gap-3">
+        <div class="bg-primary-light rounded-circle d-flex align-items-center justify-content-center shadow-sm"
+             style="width:56px;height:56px;">
+            <i class="bi bi-chat-left-heart-fill text-primary fs-4"></i>
+        </div>
+        <div>
+            <h3 class="mb-0 fw-bold text-dark">Hộp thư bệnh nhân</h3>
+            <p class="text-muted small mb-0">Bạn có <span class="badge bg-danger rounded-pill">@groups.Sum(g => g.PendingCount)</span> tin nhắn mới chưa đọc</p>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success border-0 shadow-sm rounded-pill px-4 animate-fade-in">
+            <i class="bi bi-check-circle-fill me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!groups.Any())
+    {
+        <div class="card-custom text-center py-5 border-0">
+            <div class="py-5">
+                <i class="bi bi-chat-square-dots text-muted opacity-25" style="font-size: 4rem;"></i>
+                <h5 class="text-muted mt-3">Hiện chưa có cuộc hội thoại nào</h5>
+                <a href="/" class="btn btn-primary btn-modern mt-3">Quay lại trang chủ</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card-custom border-0 overflow-hidden shadow-sm">
+            <div class="list-group list-group-flush">
+                @foreach (var g in groups)
+                {
+                    <a asp-action="ChatWithDoctor" asp-route-receiverId="@g.PatientId"
+                       class="list-group-item list-group-item-action border-0 py-3 px-4 position-relative transition-all">
+
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-primary-light text-primary d-flex align-items-center justify-content-center fw-bold me-3 flex-shrink-0 shadow-sm"
+                                 style="width:55px;height:55px;font-size:1.2rem; border: 2px solid #fff;">
+                                @g.PatientName.Substring(0, 1).ToUpper()
+                            </div>
+
+                            <div class="flex-grow-1 overflow-hidden">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h6 class="mb-0 fw-bold text-dark">@g.PatientName</h6>
+                                    <small class="text-muted small">
+                                        @if (g.Latest.CreatedAt.Date == DateTime.Today)
+                                        {
+                                            @g.Latest.CreatedAt.ToString("HH:mm")
+                                        }
+                                        else
+                                        {
+                                            @g.Latest.CreatedAt.ToString("dd/MM")
+                                        }
+                                    </small>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="text-muted small mb-0 text-truncate pe-3" style="max-width: 80%;">
+                                        @if (g.PendingCount > 0)
+                                        {
+                                            <strong class="text-dark">@g.Latest.Content</strong>
+                                        }
+                                        else
+                                        {
+                                            @g.Latest.Content
+                                        }
+                                    </p>
+                                    @if (g.PendingCount > 0)
+                                    {
+                                        <span class="badge bg-danger rounded-pill shadow-sm" style="font-size: 0.7rem;">@g.PendingCount</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="ms-3 text-light">
+                                <i class="bi bi-chevron-right"></i>
+                            </div>
+                        </div>
+
+                        @if (g.PendingCount > 0)
+                        {
+                            <div class="position-absolute start-0 top-0 bottom-0 bg-primary" style="width: 4px;"></div>
+                        }
+                    </a>
+                }
+            </div>
+        </div>
+    }
+
+    <div class="mt-4 p-3 bg-light rounded-3 border d-flex align-items-center">
+        <i class="bi bi-info-circle-fill text-info me-3 fs-5"></i>
+        <small class="text-muted">Mẹo: Bạn có thể nhấn trực tiếp vào thẻ bệnh nhân để bắt đầu trả lời tin nhắn ngay lập tức.</small>
+    </div>
+</div>
+
+<style>
+    /* Hiệu ứng hover cho danh sách */
+    .list-group-item-action {
+        transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+
+        .list-group-item-action:hover {
+            background-color: #f8faff !important;
+            z-index: 1;
+        }
+
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+</style>

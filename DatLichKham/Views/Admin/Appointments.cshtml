@@ -1,0 +1,174 @@
+﻿@model IEnumerable<ClinicBookingSystem.Models.Appointment>
+
+<div class="container-fluid mt-4 animate-fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded-4 shadow-sm">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-1">
+                    <li class="breadcrumb-item"><a asp-action="Dashboard">Admin</a></li>
+                    <li class="breadcrumb-item active">Lịch hẹn</li>
+                </ol>
+            </nav>
+            <h4 class="mb-0 fw-bold text-primary">Quản lý Lịch hẹn Khám</h4>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="window.location.reload()">
+                <i class="bi bi-arrow-clockwise me-1"></i> Làm mới
+            </button>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header bg-white py-3 border-0">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="d-flex gap-2">
+                        <span class="badge bg-light text-dark border p-2 px-3 rounded-pill small">Tất cả: @Model.Count()</span>
+                        <span class="badge bg-warning-light text-warning border border-warning-subtle p-2 px-3 rounded-pill small">Chờ duyệt: @Model.Count(a => a.Status == "Pending")</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light border-0"><i class="bi bi-filter"></i></span>
+                        <input type="text" id="appointmentSearch" class="form-control bg-light border-0" placeholder="Tìm bệnh nhân, bác sĩ...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light text-muted small text-uppercase">
+                    <tr>
+                        <th class="ps-4">Bệnh nhân</th>
+                        <th>Bác sĩ</th>
+                        <th>Thời gian khám</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end pe-4">Cập nhật nhanh</th>
+                    </tr>
+                </thead>
+                <tbody id="appointmentTableBody">
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-4">
+                                <div class="fw-bold text-dark">@item.User?.FullName</div>
+                                <small class="text-muted">ID: #APP-@item.Id</small>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-person-badge text-primary me-2"></i>
+                                    <span>BS. @item.Doctor?.FullName</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="fw-semibold text-dark">
+                                        <i class="bi bi-calendar3 me-2 text-primary"></i>@item.AppointmentDate.ToString("dd/MM/yyyy")
+                                    </span>
+                                    <small class="text-muted">
+                                        <i class="bi bi-clock me-2"></i>@item.AppointmentTime.ToString(@"hh\:mm")
+                                    </small>
+                                </div>
+                            </td>
+                            <td>
+                                @switch (item.Status)
+                                {
+                                    case "Pending":
+                                        <span class="badge rounded-pill bg-warning-light text-warning border border-warning-subtle px-3">Chờ duyệt</span>
+                                        break;
+                                    case "Confirmed":
+                                        <span class="badge rounded-pill bg-info-light text-info border border-info-subtle px-3">Đã xác nhận</span>
+                                        break;
+                                    case "Completed":
+                                        <span class="badge rounded-pill bg-success-light text-success border border-success-subtle px-3">Hoàn thành</span>
+                                        break;
+                                    case "Cancelled":
+                                        <span class="badge rounded-pill bg-red-light text-danger border border-danger-subtle px-3">Đã hủy</span>
+                                        break;
+                                }
+                            </td>
+                            <td class="text-end pe-4">
+                                <form asp-action="UpdateAppointmentStatus" method="post" class="d-inline-block">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <select name="status" class="form-select form-select-sm rounded-pill border-primary-subtle shadow-sm"
+                                            onchange="if(confirm('Cập nhật trạng thái lịch hẹn này?')) this.form.submit()"
+                                            style="width: 140px; font-size: 0.8rem;">
+                                        <option value="">-- Thay đổi --</option>
+                                        <option value="Confirmed">Xác nhận</option>
+                                        <option value="Completed">Hoàn thành</option>
+                                        <option value="Cancelled">Hủy bỏ</option>
+                                    </select>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Bảng màu bổ trợ */
+    .bg-warning-light {
+        background-color: #fffef0;
+    }
+
+    .bg-info-light {
+        background-color: #f0faff;
+    }
+
+    .bg-success-light {
+        background-color: #f0fff4;
+    }
+
+    .bg-red-light {
+        background-color: #fff5f5;
+    }
+
+    .table thead th {
+        font-weight: 600;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #eee;
+    }
+
+    .table tbody tr:hover {
+        background-color: #fcfdfe !important;
+    }
+
+    .form-select-sm:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
+    }
+
+    /* Animation */
+    .animate-fade-in {
+        animation: fadeIn 0.4s ease-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(5px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<script>
+    // Tìm kiếm nhanh tại máy (Client-side search)
+    document.getElementById('appointmentSearch').addEventListener('keyup', function() {
+        let value = this.value.toLowerCase();
+        let rows = document.querySelectorAll('#appointmentTableBody tr');
+
+        rows.forEach(row => {
+            let text = row.innerText.toLowerCase();
+            row.style.display = text.includes(value) ? '' : 'none';
+        });
+    });
+</script>

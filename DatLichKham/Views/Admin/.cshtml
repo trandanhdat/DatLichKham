@@ -1,0 +1,48 @@
+﻿DatLichKham\Views\Admin\CreateDoctorAccount.cshtml
+@model ClinicBookingSystem.Models.Doctor
+
+@{
+    ViewData["Title"] = "Tạo tài khoản cho bác sĩ";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Tạo tài khoản cho bác sĩ</h4>
+                </div>
+                <div class="card-body">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+                    <form asp-action="CreateDoctorAccount" method="post">
+                        <input type="hidden" name="doctorId" value="@Model.Id" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Bác sĩ</label>
+                            <input class="form-control" value="@Model.FullName (@Model.Specialty)" readonly />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="FullName" class="form-label">Tên đăng nhập</label>
+                            <input name="username" class="form-control" placeholder="username" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Mật khẩu</label>
+                            <input type="password" name="password" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Xác nhận mật khẩu</label>
+                            <input type="password" name="confirmPassword" class="form-control" />
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Tạo tài khoản</button>
+                        <a asp-action="Doctors" class="btn btn-link text-secondary">Hủy</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

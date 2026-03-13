@@ -1,0 +1,180 @@
+﻿@model IEnumerable<ClinicBookingSystem.Models.Doctor>
+
+<div class="container-fluid mt-4 animate-fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded-4 shadow-sm">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-1">
+                    <li class="breadcrumb-item active">Bác sĩ</li>
+                </ol>
+            </nav>
+            <h4 class="mb-0 fw-bold text-primary">Danh sách Đội ngũ Bác sĩ</h4>
+        </div>
+        <a asp-action="CreateDoctor" class="btn btn-primary btn-modern rounded-pill px-4 shadow-sm">
+            <i class="bi bi-plus-circle-fill me-2"></i>Thêm bác sĩ mới
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success border-0 shadow-sm rounded-4 alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header bg-white py-3 border-0">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="input-group input-group-sm" style="max-width: 300px;">
+                        <span class="input-group-text bg-light border-0"><i class="bi bi-search"></i></span>
+                        <input type="text" id="doctorSearch" class="form-control bg-light border-0" placeholder="Tìm tên hoặc chuyên khoa...">
+                    </div>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <span class="text-muted small">Tổng cộng: <strong>@Model.Count()</strong> bác sĩ</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light text-muted small text-uppercase">
+                    <tr>
+                        <th class="ps-4" style="width: 300px;">Thông tin bác sĩ</th>
+                        <th>Chuyên khoa</th>
+                        <th>Số điện thoại</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end pe-4">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="doctorTableBody">
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm bg-primary-light text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold me-3">
+                                        @item.FullName.Substring(0, 1).ToUpper()
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark">@item.FullName</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">ID: #DOC-@item.Id</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-primary border border-primary-subtle px-3 rounded-pill">
+                                    @item.Specialty
+                                </span>
+                            </td>
+                            <td><i class="bi bi-telephone text-muted me-2"></i>@item.Phone</td>
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="badge rounded-pill bg-success-light text-success border border-success-subtle px-3">
+                                        ● Đang làm việc
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge rounded-pill bg-red-light text-danger border border-danger-subtle px-3">
+                                        ● Đã nghỉ
+                                    </span>
+                                }
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="btn-group shadow-sm rounded-3">
+                                    <a asp-action="EditDoctor" asp-route-id="@item.Id"
+                                       class="btn btn-white btn-sm text-primary" title="Chỉnh sửa">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a asp-action="DeleteDoctor" asp-route-id="@item.Id"
+                                       class="btn btn-white btn-sm text-danger"
+                                       title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa bác sĩ này?')">
+                                        <i class="bi bi-trash3"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-primary-light {
+        background-color: #f0f7ff;
+    }
+
+    .bg-success-light {
+        background-color: #e8f5e9;
+    }
+
+    .bg-red-light {
+        background-color: #ffebee;
+    }
+
+    .avatar-sm {
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+    }
+
+    .table thead th {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        border-bottom: none;
+    }
+
+    .table tbody tr {
+        transition: background-color 0.2s;
+        border-bottom: 1px solid #f8f9fa;
+    }
+
+        .table tbody tr:hover {
+            background-color: #fcfdfe !important;
+        }
+
+    .btn-white {
+        background: white;
+        border: 1px solid #eee;
+    }
+
+        .btn-white:hover {
+            background: #f8f9fa;
+        }
+
+    /* Animation */
+    .animate-fade-in {
+        animation: fadeIn 0.4s ease-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(5px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<script>
+    // Script tìm kiếm nhanh tại máy (Client-side search)
+    document.getElementById('doctorSearch').addEventListener('keyup', function() {
+        let value = this.value.toLowerCase();
+        let rows = document.querySelectorAll('#doctorTableBody tr');
+
+        rows.forEach(row => {
+            let text = row.innerText.toLowerCase();
+            row.style.display = text.includes(value) ? '' : 'none';
+        });
+    });
+</script>

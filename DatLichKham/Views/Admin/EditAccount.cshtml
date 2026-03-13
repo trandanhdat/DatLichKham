@@ -1,0 +1,151 @@
+﻿@model ClinicBookingSystem.Models.User
+
+@{
+    ViewData["Title"] = "Chỉnh sửa tài khoản";
+}
+
+<div class="container-fluid mt-4 mb-5 animate-fade-in">
+    <div class="row justify-content-center">
+        <div class="col-xl-6 col-lg-8">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-action="Dashboard">Admin</a></li>
+                    <li class="breadcrumb-item"><a asp-action="Accounts">Tài khoản</a></li>
+                    <li class="breadcrumb-item active">Chỉnh sửa</li>
+                </ol>
+            </nav>
+
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-header bg-primary py-3 px-4 text-white border-0">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-white bg-opacity-25 rounded-circle p-2 me-3">
+                            <i class="bi bi-pencil-square fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-0 fw-bold">Cập nhật tài khoản</h5>
+                            <small class="opacity-75">Đang chỉnh sửa: <strong>@Model.Username</strong></small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="EditAccount" method="post" class="needs-validation">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 rounded-3 small"></div>
+                        <input type="hidden" asp-for="Id" />
+
+                        <h6 class="text-primary fw-bold text-uppercase mb-4 small" style="letter-spacing: 1px;">
+                            <i class="bi bi-person-badge me-2"></i>Thông tin định danh
+                        </h6>
+
+                        <div class="mb-4">
+                            <label asp-for="Username" class="form-label fw-semibold">Tên đăng nhập</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-at"></i></span>
+                                <input asp-for="Username" class="form-control bg-light border-start-0 ps-0" readonly />
+                            </div>
+                            <small class="text-muted">Tên đăng nhập không thể thay đổi.</small>
+                        </div>
+
+                        <div class="p-3 rounded-4 bg-light border mb-4">
+                            <h6 class="fw-bold mb-3 small"><i class="bi bi-shield-lock me-2 text-warning"></i>Thay đổi mật khẩu</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label small">Mật khẩu mới</label>
+                                    <input type="password" name="newPassword" class="form-control" placeholder="••••••••" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small">Xác nhận mật khẩu</label>
+                                    <input type="password" name="confirmPassword" class="form-control" placeholder="••••••••" />
+                                </div>
+                            </div>
+                            <div class="mt-2 text-muted" style="font-size: 0.75rem;">
+                                <i class="bi bi-info-circle me-1"></i> Để trống nếu bạn không muốn thay đổi mật khẩu hiện tại.
+                            </div>
+                        </div>
+
+                        <h6 class="text-primary fw-bold text-uppercase mb-4 mt-5 small" style="letter-spacing: 1px;">
+                            <i class="bi bi-info-circle me-2"></i>Thông tin liên hệ & Quyền hạn
+                        </h6>
+
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label asp-for="FullName" class="form-label fw-semibold">Họ và Tên</label>
+                                <input asp-for="FullName" class="form-control rounded-3" placeholder="Nguyễn Văn A" />
+                                <span asp-validation-for="FullName" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Email" class="form-label fw-semibold">Email</label>
+                                <input asp-for="Email" class="form-control rounded-3" placeholder="example@mail.com" />
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Phone" class="form-label fw-semibold">Số điện thoại</label>
+                                <input asp-for="Phone" class="form-control rounded-3" placeholder="09xxxxxxxx" />
+                                <span asp-validation-for="Phone" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Vai trò hệ thống</label>
+                                <select asp-for="Role" class="form-select rounded-3 border-primary-subtle shadow-sm">
+                                    <option value="User">Patient (Bệnh nhân)</option>
+                                    <option value="Doctor">Doctor (Bác sĩ)</option>
+                                    <option value="Admin">Admin (Quản trị viên)</option>
+                                </select>
+                                <div class="mt-2 alert alert-warning border-0 py-2 px-3 small rounded-3">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    Thay đổi vai trò sẽ ảnh hưởng đến quyền truy cập của tài khoản này.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary btn-modern rounded-pill px-5 shadow-sm">
+                                <i class="bi bi-save me-2"></i>Lưu thay đổi
+                            </button>
+                            <a asp-action="Accounts" class="btn btn-light rounded-pill px-4">Quay lại</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-primary {
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%) !important;
+    }
+
+    .form-control:focus, .form-select:focus {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
+        border-color: #0d6efd;
+    }
+
+    .btn-modern {
+        transition: all 0.3s;
+    }
+
+        .btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3) !important;
+        }
+
+    /* Animation */
+    .animate-fade-in {
+        animation: fadeIn 0.4s ease-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

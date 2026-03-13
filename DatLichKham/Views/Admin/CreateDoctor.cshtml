@@ -1,0 +1,180 @@
+﻿@model ClinicBookingSystem.Models.Doctor
+
+@{
+    ViewData["Title"] = "Thêm bác sĩ mới";
+}
+
+<div class="container-fluid mt-4 mb-5 animate-fade-in">
+    <div class="row justify-content-center">
+        <div class="col-xl-8 col-lg-10">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-action="Dashboard">Admin</a></li>
+                    <li class="breadcrumb-item"><a asp-action="Doctors">Bác sĩ</a></li>
+                    <li class="breadcrumb-item active">Thêm mới</li>
+                </ol>
+            </nav>
+
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-header bg-primary py-3 px-4 text-white border-0">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-white bg-opacity-25 rounded-circle p-2 me-3">
+                            <i class="bi bi-person-plus-fill fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-0 fw-bold">Thêm bác sĩ vào hệ thống</h5>
+                            <small class="opacity-75">Vui lòng điền đầy đủ các thông tin chuyên môn</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger border-0 rounded-4 shadow-sm mb-4">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <span>Vui lòng kiểm tra lại các thông tin bên dưới.</span>
+                            <div asp-validation-summary="All" class="small mt-2"></div>
+                        </div>
+                    }
+
+                    <form asp-action="CreateDoctor" method="post" class="needs-validation">
+                        <h6 class="text-primary fw-bold text-uppercase mb-4 small" style="letter-spacing: 1px;">
+                            <i class="bi bi-info-circle me-2"></i>Thông tin cơ bản
+                        </h6>
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label asp-for="FullName" class="form-label fw-semibold">Họ và Tên</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-person"></i></span>
+                                    <input asp-for="FullName" class="form-control bg-light border-start-0 ps-0" placeholder="BS. Nguyễn Văn A" />
+                                </div>
+                                <span asp-validation-for="FullName" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Specialty" class="form-label fw-semibold">Chuyên khoa</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-award"></i></span>
+                                    <input asp-for="Specialty" class="form-control bg-light border-start-0 ps-0" placeholder="Nội tổng quát, Da liễu..." />
+                                </div>
+                                <span asp-validation-for="Specialty" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Email" class="form-label fw-semibold">Email liên hệ</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope"></i></span>
+                                    <input asp-for="Email" class="form-control bg-light border-start-0 ps-0" placeholder="bacsi@clinic.com" />
+                                </div>
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Phone" class="form-label fw-semibold">Số điện thoại</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-phone"></i></span>
+                                    <input asp-for="Phone" class="form-control bg-light border-start-0 ps-0" placeholder="09xx xxx xxx" />
+                                </div>
+                                <span asp-validation-for="Phone" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 p-4 rounded-4 bg-light border shadow-sm position-relative">
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input ms-0 me-3" type="checkbox" id="createAccount" name="createAccount" value="true" style="width: 2.5em; height: 1.25em;">
+                                <label class="form-check-label fw-bold text-dark" for="createAccount">
+                                    Cấp tài khoản đăng nhập hệ thống
+                                </label>
+                            </div>
+
+                            <div id="accountFields" class="mt-4 pt-3 border-top" style="display:none; animation: slideDown 0.3s ease-out;">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label small fw-bold">Tên đăng nhập</label>
+                                        <input name="username" class="form-control" placeholder="Ví dụ: bacsi.nguyenvana" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Mật khẩu</label>
+                                        <input type="password" name="password" class="form-control" placeholder="••••••••" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Xác nhận mật khẩu</label>
+                                        <input type="password" name="confirmPassword" class="form-control" placeholder="••••••••" />
+                                    </div>
+                                </div>
+                                <div class="mt-2 text-muted small">
+                                    <i class="bi bi-info-circle-fill me-1"></i> Bác sĩ sẽ dùng tài khoản này để đăng nhập và trả lời tin nhắn bệnh nhân.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary btn-modern rounded-pill px-5 shadow-sm">
+                                <i class="bi bi-check-lg me-2"></i>Hoàn tất thêm mới
+                            </button>
+                            <a asp-action="Doctors" class="btn btn-light rounded-pill px-4">Hủy bỏ</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-primary {
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%) !important;
+    }
+
+    .input-group-text {
+        color: #6c757d;
+        border-color: #dee2e6;
+    }
+
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #0d6efd;
+        background-color: #fff !important;
+    }
+
+    .btn-modern {
+        transition: all 0.3s;
+    }
+
+        .btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3) !important;
+        }
+
+    @@keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+@section Scripts {
+    <script>
+        (function () {
+            var chk = document.getElementById('createAccount');
+            var fld = document.getElementById('accountFields');
+            function toggle() {
+                if (chk.checked) {
+                    fld.style.display = 'block';
+                } else {
+                    fld.style.display = 'none';
+                }
+            }
+            chk.addEventListener('change', toggle);
+            toggle();
+        })();
+    </script>
+}

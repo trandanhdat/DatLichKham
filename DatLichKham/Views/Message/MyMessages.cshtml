@@ -1,0 +1,139 @@
+﻿@* Views/Message/MyMessages.cshtml *@
+@model List<ClinicBookingSystem.Models.Message>
+@{
+    ViewData["Title"] = "Tin nhắn của tôi";
+
+    var groups = Model
+        .GroupBy(m => m.ReceiverId)
+        .Select(g => new
+        {
+            ReceiverId = g.Key,
+            ReceiverName = g.First().Receiver?.FullName ?? "Bác sĩ",
+            Latest = g.OrderByDescending(m => m.CreatedAt).First(),
+            UnrepliedCount = g.Count(m => m.Status != "Replied" && m.AdminReply == null)
+        })
+        .OrderByDescending(g => g.Latest.CreatedAt)
+        .ToList();
+}
+
+<div class="container-lg mt-4 mb-5 animate-fade-in">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex align-items-center gap-3">
+            <div class="bg-primary-light rounded-circle d-flex align-items-center justify-content-center shadow-sm"
+                 style="width:52px;height:52px;">
+                <i class="bi bi-chat-dots-fill text-primary fs-4"></i>
+            </div>
+            <div>
+                <h3 class="mb-0 fw-bold text-dark">Tin nhắn của tôi</h3>
+                <p class="text-muted small mb-0">Theo dõi tư vấn từ đội ngũ bác sĩ</p>
+            </div>
+        </div>
+        <a asp-action="Create" class="btn btn-primary btn-modern rounded-pill px-4 shadow-sm">
+            <i class="bi bi-plus-lg me-1"></i> Gửi tin mới
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success border-0 shadow-sm rounded-pill px-4 mb-4 animate-fade-in">
+            <i class="bi bi-check-circle-fill me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!groups.Any())
+    {
+        <div class="card-custom text-center py-5 border-0 shadow-sm">
+            <div class="py-5">
+                <i class="bi bi-envelope-paper text-muted opacity-25" style="font-size: 4rem;"></i>
+                <h5 class="text-muted mt-3">Chưa có cuộc hội thoại nào</h5>
+                <p class="text-muted small">Hãy đặt câu hỏi để nhận được sự tư vấn từ chuyên gia.</p>
+                <a asp-action="Create" class="btn btn-outline-primary rounded-pill mt-2">Gửi tin nhắn đầu tiên</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card-custom border-0 overflow-hidden shadow-sm">
+            <div class="list-group list-group-flush">
+                @foreach (var g in groups)
+                {
+                    bool hasNewReply = !string.IsNullOrEmpty(g.Latest.AdminReply);
+
+                    <a asp-action="ChatWithDoctor" asp-route-receiverId="@g.ReceiverId"
+                       class="list-group-item list-group-item-action border-0 py-3 px-4 position-relative transition-all">
+
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-white border border-primary text-primary d-flex align-items-center justify-content-center fw-bold me-3 flex-shrink-0 shadow-sm"
+                                 style="width:55px;height:55px;font-size:1.2rem;">
+                                @g.ReceiverName.Substring(0, 1).ToUpper()
+                            </div>
+
+                            <div class="flex-grow-1 overflow-hidden">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h6 class="mb-0 fw-bold text-dark text-truncate" style="max-width: 200px;">
+                                        BS. @g.ReceiverName
+                                    </h6>
+                                    <small class="text-muted small">
+                                        @g.Latest.CreatedAt.ToString("HH:mm dd/MM")
+                                    </small>
+                                </div>
+
+                                <div class="d-flex align-items-center">
+                                    @if (hasNewReply)
+                                    {
+                                        <span class="badge bg-success-light text-success border border-success-subtle me-2" style="font-size: 0.65rem;">
+                                            Đã phản hồi
+                                        </span>
+                                        <p class="text-dark small mb-0 text-truncate fw-medium">
+                                            @g.Latest.AdminReply
+                                        </p>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-light text-muted border me-2" style="font-size: 0.65rem;">
+                                            Đã gửi
+                                        </span>
+                                        <p class="text-muted small mb-0 text-truncate">
+                                            Bạn: @g.Latest.Content
+                                        </p>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="ms-3 text-light">
+                                <i class="bi bi-chevron-right"></i>
+                            </div>
+                        </div>
+
+                        @if (hasNewReply && g.Latest.Status != "Replied")
+                        {
+                            <span class="position-absolute top-50 start-0 translate-middle p-1 bg-primary border border-light rounded-circle ms-1"></span>
+                        }
+                    </a>
+                }
+            </div>
+        </div>
+    }
+
+    <div class="mt-4 text-center">
+        <p class="text-muted small">
+            <i class="bi bi-shield-check me-1"></i> Thông tin tư vấn được bảo mật tuyệt đối giữa bạn và bác sĩ.
+        </p>
+    </div>
+</div>
+
+<style>
+    .bg-success-light {
+        background-color: #e8f5e9;
+    }
+
+    .list-group-item-action:hover {
+        background-color: #f0f7ff !important;
+    }
+
+    .transition-all {
+        transition: all 0.2s ease;
+    }
+</style>

@@ -1,0 +1,48 @@
+﻿@model IEnumerable<ClinicBookingSystem.Models.Appointment>
+
+
+<div class="container mt-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0"><i class="bi bi-person-badge"></i> Lịch khám của tôi</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Bệnh nhân</th>
+                            <th>Ngày khám</th>
+                            <th>Giờ</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="fw-bold">@item.User?.FullName</div>
+                                    <small class="text-muted">SĐT: @item.User?.Phone</small>
+                                </td>
+                                <td>@item.AppointmentDate.ToString("dd/MM/yyyy")</td>
+                                <td>@item.AppointmentDate.ToString("HH:mm")</td>
+                                <td>
+                                    <span class="badge @(item.Status == "Pending" ? "bg-warning text-dark" : "bg-primary")">
+                                        @item.Status
+                                    </span>
+                                </td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success">
+                                        Xem bệnh án
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

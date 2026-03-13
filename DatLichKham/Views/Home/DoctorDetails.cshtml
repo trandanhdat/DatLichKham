@@ -1,0 +1,74 @@
+﻿@model ClinicBookingSystem.Models.Doctor
+
+@{
+    ViewData["Title"] = "Chi tiết Bác sĩ";
+}
+
+<div class="container mt-5">
+    <div class="card-custom overflow-hidden border-0 shadow-sm">
+        <div class="row g-0">
+            <div class="col-md-4 text-center py-5 bg-light" style="border-right: 1px solid rgba(0,0,0,0.05);">
+                <div class="mb-4">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png"
+                         class="img-fluid rounded-circle shadow-sm border border-4 border-white"
+                         style="width: 180px; height: 180px; object-fit: cover;">
+                </div>
+
+                <h3 class="fw-bold text-dark mb-2">@Model.FullName</h3>
+                <span class="badge-status status-approved px-3 py-2 fs-6">
+                    @Model.Specialty
+                </span>
+            </div>
+
+            <div class="col-md-8 bg-white">
+                <div class="card-body p-5">
+                    <h4 class="fw-bold mb-4 text-primary border-bottom pb-2">Thông tin chi tiết</h4>
+
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-envelope-fill me-3 text-secondary fs-5"></i>
+                                <div>
+                                    <label class="text-muted small d-block">Email</label>
+                                    <span class="fw-medium">@Model.Email</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-telephone-fill me-3 text-secondary fs-5"></i>
+                                <div>
+                                    <label class="text-muted small d-block">Số điện thoại</label>
+                                    <span class="fw-medium">@Model.Phone</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-briefcase-fill me-3 text-secondary fs-5 mt-1"></i>
+                                <div>
+                                    <label class="text-muted small d-block">Kinh nghiệm chuyên môn</label>
+                                    <p class="mb-0 text-dark">Chuyên gia trong lĩnh vực <strong>@Model.Specialty</strong>.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 d-flex flex-wrap gap-3">
+                        <a asp-controller="Appointment" asp-action="Create" asp-route-doctorId="@Model.Id"
+                           class="btn-modern btn btn-primary px-4 shadow-sm">
+                            <i class="bi bi-calendar-plus me-2"></i>Đặt lịch khám
+                        </a>
+
+                        <a asp-controller="Message" asp-action="ChatWithDoctor" asp-route-receiverId="@Model.UserId"
+                           class="btn-modern btn btn-outline-success px-4">
+                            <i class="bi bi-chat-dots me-2"></i>Tư vấn trực tuyến
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

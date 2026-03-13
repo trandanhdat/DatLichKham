@@ -1,0 +1,57 @@
+﻿@model ClinicBookingSystem.Models.User
+@{
+    ViewData["Title"] = "Trang chủ - Hệ thống đặt lịch khám";
+}
+
+<div class="card-custom p-5 mb-5 border-0" style="background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%);">
+    <div class="container-fluid py-3">
+        <h1 class="display-5 fw-bold text-primary">Chào mừng đến với ClinicBooking</h1>
+        <p class="col-md-8 fs-5 text-muted mb-4">
+            @if (ViewBag.Username != null)
+            {
+                <span>Xin chào, <strong class="text-dark">@Model.FullName</strong>! Sức khỏe của bạn là ưu tiên hàng đầu. Bạn muốn đặt lịch khám hôm nay chứ?</span>
+            }
+            else
+            {
+                <span>Giải pháp chăm sóc sức khỏe toàn diện. Đặt lịch khám nhanh chóng với các chuyên gia đầu ngành ngay tại nhà.</span>
+            }
+        </p>
+        <div class="d-flex gap-3">
+            <a asp-action="Doctors" class="btn btn-primary btn-modern shadow-sm">Xem danh sách bác sĩ</a>
+            @if (ViewBag.Username == null)
+            {
+                <a asp-controller="Account" asp-action="Register" class="btn btn-outline-secondary btn-modern">Đăng ký ngay</a>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 text-center">
+    <div class="col-md-4">
+        <div class="card-custom p-4 h-100">
+            <div class="mb-3">
+                <i class="bi bi-calendar-check text-primary fs-1"></i>
+            </div>
+            <h4 class="fw-bold">Đặt lịch 24/7</h4>
+            <p class="text-muted mb-0">Chủ động chọn thời gian khám phù hợp với lịch trình của cá nhân bạn.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-custom p-4 h-100">
+            <div class="mb-3">
+                <i class="bi bi-person-badge text-primary fs-1"></i>
+            </div>
+            <h4 class="fw-bold">Bác sĩ chuyên gia</h4>
+            <p class="text-muted mb-0">Đội ngũ bác sĩ giàu kinh nghiệm được tuyển chọn kỹ lưỡng từ các viện lớn.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-custom p-4 h-100">
+            <div class="mb-3">
+                <i class="bi bi-chat-dots text-primary fs-1"></i>
+            </div>
+            <h4 class="fw-bold">Hỗ trợ tận tâm</h4>
+            <p class="text-muted mb-0">Luôn lắng nghe và giải đáp mọi thắc mắc của bệnh nhân một cách nhanh nhất.</p>
+        </div>
+    </div>
+</div>
