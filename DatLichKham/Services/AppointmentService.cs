@@ -84,26 +84,34 @@ namespace DatLichKham.Services
         public async Task<(bool Success, string? Error)> CreateAsync(Appointment appointment, int userId)
         {
             if (appointment.AppointmentDate.Date < DateTime.Now.Date)
-            {
                 return (false, "Ngày khám phải từ hôm nay trở đi");
-            }
 
             if (appointment.DoctorId <= 0)
-            {
                 return (false, "Vui lòng chọn bác sĩ.");
-            }
 
-            var existingAppointment = await _context.Appointments
+            // Kiểm tra bác sĩ đã có lịch vào slot này chưa (bỏ qua Cancelled và Rejected)
+            var doctorConflict = await _context.Appointments
                 .FirstOrDefaultAsync(a =>
                     a.DoctorId == appointment.DoctorId &&
                     a.AppointmentDate.Date == appointment.AppointmentDate.Date &&
                     a.AppointmentTime == appointment.AppointmentTime &&
-                    a.Status != "Cancelled");
+                    a.Status != "Cancelled" &&
+                    a.Status != "Rejected");
 
-            if (existingAppointment != null)
-            {
+            if (doctorConflict != null)
                 return (false, "Bác sĩ đã có lịch khám vào thời gian này. Vui lòng chọn giờ khác.");
-            }
+
+            // Kiểm tra bệnh nhân đã đặt lịch với bác sĩ này trong ngày chưa
+            var userConflict = await _context.Appointments
+                .FirstOrDefaultAsync(a =>
+                    a.UserId == userId &&
+                    a.DoctorId == appointment.DoctorId &&
+                    a.AppointmentDate.Date == appointment.AppointmentDate.Date &&
+                    a.Status != "Cancelled" &&
+                    a.Status != "Rejected");
+
+            if (userConflict != null)
+                return (false, "Bạn đã có lịch khám với bác sĩ này trong ngày. Vui lòng chọn ngày khác.");
 
             appointment.UserId = userId;
             appointment.Status = "Pending";
