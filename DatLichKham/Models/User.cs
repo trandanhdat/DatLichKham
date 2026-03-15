@@ -32,7 +32,7 @@ namespace ClinicBookingSystem.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Navigation properties
-        public ICollection<Appointment> Appointments { get; set; }
-        public ICollection<Message> Messages { get; set; }
+        public ICollection<Appointment>? Appointments { get; set; }
+        public ICollection<Message>? Messages { get; set; }
     }
 }

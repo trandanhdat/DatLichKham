@@ -13,14 +13,12 @@ namespace DatLichKham.Services
 
             if (controllerName == "Account" && (actionName == "Login" || actionName == "Register"))
             {
-                return; // Cho phép đi qua
+                return;
             }
 
-            // Kiểm tra Session
             var userId = context.HttpContext.Session.GetInt32("UserId");
             if (userId == null)
             {
-                // Nếu chưa đăng nhập, đá về trang Login
                 context.Result = new RedirectToActionResult("Login", "Account", null);
             }
         }

@@ -6,23 +6,12 @@ namespace DatLichKham.Services
     public interface IMessageService
     {
         Task<List<Message>> GetAllAsync();
-        // Lấy tất cả tin nhắn của một user (bệnh nhân xem tin của mình)
         Task<List<Message>> GetByUserIdAsync(int userId);
-
-        // Lấy tất cả tin nhắn gửi đến một receiver (bác sĩ xem inbox)
         Task<List<Message>> GetByReceiverIdAsync(int receiverId);
-
-        // Lấy một tin nhắn theo id
         Task<Message?> GetByIdAsync(int id);
-
-        // Tạo tin nhắn mới, trả về entity đã lưu (có Id)
         Task<Message> CreateAsync(Message message);
-
-        // Bác sĩ / admin trả lời tin nhắn
-        // Trả về (success, errorMessage)
         Task<(bool success, string? error)> ReplyAsync(int messageId, int replierUserId, string replyContent);
 
-        // Lấy toàn bộ lịch sử hội thoại giữa 2 user (dùng cho ChatWithDoctor)
         Task<List<Message>> GetConversationAsync(int userId, int otherUserId);
     }
 
@@ -94,16 +83,13 @@ namespace DatLichKham.Services
             if (message == null)
                 return (false, "Tin nhắn không tồn tại.");
 
-            // Kiểm tra quyền: chỉ receiver mới được trả lời
             if (message.ReceiverId != replierUserId)
                 return (false, "Bạn không có quyền trả lời tin nhắn này.");
 
-            // Cập nhật tin nhắn gốc
             message.AdminReply = replyContent;
             message.Status = "Replied";
             message.RepliedAt = DateTime.Now;
 
-            // Tạo tin nhắn phản hồi mới để hiển thị trong conversation
             var replyMsg = new Message
             {
                 UserId = replierUserId,
